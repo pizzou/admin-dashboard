@@ -19,9 +19,26 @@ app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 
 // cors => cross origin resource sharing
+const allowedOrigins = [
+  'http://localhost:3000', // Local development
+  'https://dashboard-mfxx3cbvx-pmpumuropizzougmailcoms-projects.vercel.app/', 
+  
+];
+
+// Configure CORS
 app.use(cors({
-  origin: 'http://localhost:3000', // Adjust this to your frontend URL
-  credentials: true, // This allows cookies and other credentials to be sent
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or CURL requests)
+    if (!origin) return callback(null, true);
+
+    // Check if the origin is in the allowed list
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Enable credentials (cookies, authorization headers, etc.)
 }));
 
 
