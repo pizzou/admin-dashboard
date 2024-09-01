@@ -29,10 +29,17 @@ app.use(express.json({ limit: "50mb" }));
 // Cookie parser
 app.use(cookieParser());
 
-app.use(cors({
-  origin: 'https://adminhttps-github-com-pizzou-admin-frontend.vercel.app',
-  credentials: true
-}));
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  res.header('Access-Control-Allow-Origin', 'https://adminhttps-github-com-pizzou-admin-frontend.vercel.app');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || 'Internal Server Error',
+  });
+});
+
+
+
 app.use(
   "/api/v1",
   userRouter,
