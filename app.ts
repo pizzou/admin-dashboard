@@ -20,8 +20,8 @@ app.use(cookieParser());
 
 // cors => cross origin resource sharing
 const allowedOrigins = [
-  'http://localhost:3000', // Local development
-  'https://dashboard-mfxx3cbvx-pmpumuropizzougmailcoms-projects.vercel.app/', 
+  'https://admin-frontend-mns4hnunu-pmpumuropizzougmailcoms-projects.vercel.app/', // Local development
+  , 
   
 ];
 
