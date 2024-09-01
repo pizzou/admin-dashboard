@@ -29,27 +29,12 @@ app.use(express.json({ limit: "50mb" }));
 // Cookie parser
 app.use(cookieParser());
 
-// CORS configuration
-const allowedOrigins = [
-  'https://adminhttps-github-com-pizzou-admin-frontend.vercel.app'
-];
-
-const corsOptions: cors.CorsOptions = {
-  origin: (origin: string | undefined, callback: (err: Error | null, allowed: boolean) => void) => {
-    if (allowedOrigins.indexOf(origin as string) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'), false);
-    }
-  },
-  credentials: true, // if you need to send cookies or use authorization headers
-};
-
-app.use(cors(corsOptions));
-
-// Test CORS route
-app.get('/api/v1/me', (req, res) => {
-  res.json({ message: 'CORS is configured correctly!' });
+// CORS Headers
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
 });
 
 // Routes
