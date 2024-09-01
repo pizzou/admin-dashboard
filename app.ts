@@ -29,6 +29,10 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+app.get('/api/v1/me', (req, res) => {
+  res.json({ message: 'CORS is configured properly!' });
+});
+
 
 // api requests limit
 const limiter = rateLimit({
