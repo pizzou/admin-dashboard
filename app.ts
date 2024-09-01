@@ -20,7 +20,7 @@ app.use(cookieParser());
 
 // cors => cross origin resource sharing
 const allowedOrigins = [
-  'https://admin-frontend-mns4hnunu-pmpumuropizzougmailcoms-projects.vercel.app/', // Local development
+  'https://adminhttps-github-com-pizzou-admin-frontend.vercel.app/', // Local development
   , 
   
 ];
