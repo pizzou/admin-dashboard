@@ -1,6 +1,5 @@
-require("dotenv").config();
-import express, { NextFunction, Request, Response } from "express";
-export const app = express();
+import express from "express";
+import winston from "winston";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { ErrorMiddleware } from "./middleware/error";
@@ -12,31 +11,50 @@ import analyticsRouter from "./routes/analytics.route";
 import layoutRouter from "./routes/layout.route";
 import { rateLimit } from "express-rate-limit";
 
-// body parser
+// Create a logger instance with winston
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'combined.log' }),
+  ],
+});
+
+export const app = express();
+
+// Logging incoming requests
+app.use((req, res, next) => {
+  logger.info(`${req.method} ${req.url}`);
+  next();
+});
+
+// Configure body parser
 app.use(express.json({ limit: "50mb" }));
 
-// cookie parser
+// Configure cookie parser
 app.use(cookieParser());
 
-// api requests limit
+// CORS configuration
+app.use(cors({
+  origin: 'https://adminhttps-github-com-pizzou-admin-frontend.vercel.app',
+  credentials: true,
+}));
+
+// API requests limit
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   standardHeaders: "draft-7",
   legacyHeaders: false,
 });
+app.use(limiter);
 
-// cors => cross origin resource sharing
-app.use(cors({
-  origin: 'https://adminhttps-github-com-pizzou-admin-frontend.vercel.app', // Allow only your frontend domain
-  credentials: true, // Allow cookies to be sent with requests
-}));
-
-
-
-
-
-// routes
+// Routes
 app.use(
   "/api/v1",
   userRouter,
@@ -47,21 +65,25 @@ app.use(
   layoutRouter
 );
 
-// testing api
-app.get("/test", (req: Request, res: Response, next: NextFunction) => {
+// Test route
+app.get("/test", (req, res) => {
   res.status(200).json({
-    succcess: true,
+    success: true,
     message: "API is working",
   });
 });
 
-// unknown route
-app.all("*", (req: Request, res: Response, next: NextFunction) => {
+// Unknown route handling
+app.all("*", (req, res, next) => {
   const err = new Error(`Route ${req.originalUrl} not found`) as any;
   err.statusCode = 404;
   next(err);
 });
 
-// middleware calls
-app.use(limiter);
+// Error handling middleware with logging
+app.use((err: { message: any; }, req: { method: any; url: any; }, res: any, next: (arg0: any) => void) => {
+  logger.error(`Error: ${err.message} - ${req.method} ${req.url}`);
+  next(err);
+});
+
 app.use(ErrorMiddleware);
