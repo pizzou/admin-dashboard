@@ -18,13 +18,6 @@ app.use(express.json({ limit: "50mb" }));
 // cookie parser
 app.use(cookieParser());
 
-// cors => cross origin resource sharing
-app.use(cors(
-  {
-    origin: process.env.ORIGIN,
-  }
-));
-
 // api requests limit
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -32,6 +25,16 @@ const limiter = rateLimit({
   standardHeaders: "draft-7",
   legacyHeaders: false,
 });
+
+// cors => cross origin resource sharing
+app.use(cors({
+  origin: 'https://adminhttps-github-com-pizzou-admin-frontend.vercel.app', // Allow only your frontend domain
+  credentials: true, // Allow cookies to be sent with requests
+}));
+
+
+
+
 
 // routes
 app.use(
