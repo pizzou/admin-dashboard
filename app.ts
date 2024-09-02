@@ -14,13 +14,13 @@ const app = express();
 
 // Apply CORS middleware
 app.use(cors({
-    origin: 'https://admin-frontend-d37h.vercel.app', // Replace with your frontend domain
+    origin: 'https://admin-frontend-68me.vercel.app/', // Replace with your frontend domain
     credentials: true, // Allow cookies to be sent with requests
 }));
 
 // Handle OPTIONS requests for CORS preflight
 app.options('*', cors({
-    origin: 'https://admin-frontend-d37h.vercel.app',
+    origin: 'https://admin-frontend-68me.vercel.app/',
     credentials: true,
 }));
 
