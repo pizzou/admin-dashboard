@@ -26,10 +26,17 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://admin-frontend-d37h.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+
 // cors => cross origin resource sharing
-app.use(cors({
-  origin: 'https://admin-frontend-d37h.vercel.app/', // Allow only your frontend domain
-  credentials: true, // Allow cookies to be sent with requests
+app.options('*', cors({
+  origin: 'https://admin-frontend-d37h.vercel.app',
+  credentials: true,
 }));
 
 
