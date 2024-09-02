@@ -14,7 +14,7 @@ export const isAutheticated = CatchAsyncError(
         new ErrorHandler("Please login to access this resource", 400)
       );
     }
-    const decoded = jwt.decode(access_token) as JwtPayload
+    const decoded = jwt.verify(access_token, process.env.ACCESS_TOKEN as string) as JwtPayload
     if (!decoded) {
       return next(new ErrorHandler("access token is not valid", 400));
     }
